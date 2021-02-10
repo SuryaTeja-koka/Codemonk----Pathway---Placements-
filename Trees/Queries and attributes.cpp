@@ -1,60 +1,39 @@
-#include <iostream>
-#include <algorithm>
-#include <vector>
-#include <set>
-#include <queue>
-#include <map>
-#include <string.h>
-#include <math.h>
-#include <stdio.h>
-//#include "D:\C++\test_lib_projects\testlib.h"
+#include <bits/stdc++.h>
 using namespace std;
-#define ll long long
-#define pii pair<int,int>
-bool debug=true;
-/*
-   Write In New Computer
-    By XiaoGeNintendo
-	     gwq2017
-	Type:Sol 
-*/
-//void fo(int id){
-//	freopen((toString(id)+".txt").c_str(),"w",stdout);
-//}
-set<pii> st;
-bool stand=true;
-ll n,m,q;
-ll ans;
-int main(int argc,char* argv[]){
-	scanf("%lld%lld%lld",&n,&m,&q);
-	for(int i=0;i<q;i++){
-		int mode;
-		scanf("%d",&mode);
-		if(mode==1){
-			int x,y;
-			scanf("%d%d",&x,&y);
-			set<pii>::iterator pos=st.find(make_pair(x,y));
-			if(pos!=st.end()){
-				st.erase(pos);
-				if(stand){
-					ans--;
-				}else{
-					ans++;
-				}
-			}else{
-				st.insert(make_pair(x,y));
-				if(stand){
-					ans++;
-				}else{
-					ans--;
-				}
-			}
-		}else{
-			ans=n*m-ans;
-			stand=!stand;
+typedef long long ll;
+const int maxn = 1e5 + 14;
+const ll inf = 1e18;
+ 
+int n, a[maxn], l[maxn], r[maxn];
+ll b[maxn];
+multiset<ll> s;
+vector<ll> add[maxn], rem[maxn];
+int main(){
+	ios::sync_with_stdio(0), cin.tie(0);
+	cin >> n;
+	for(int i = 0; i < n; i++)
+		cin >> a[i];
+	for(int i = 0; i < n; i++)
+		cin >> l[i] >> r[i], l[i]--, r[i]--;
+	for(int i = n - 1; i >= 0; i--){
+		for(auto x : add[i])
+			s.insert(x);
+		if(i != n - 1)
+			b[i] = s.size() ? *s.begin() : inf;
+		if(i){
+			add[ r[i] ].push_back(b[i] + a[i]);
+			rem[ l[i] ].push_back(b[i] + a[i]);
 		}
+		for(auto x : rem[i])
+			s.erase(s.find(x));
 	}
-	
-	cout<<ans;
-	return 0;
+	for(int i = 1; i < n; i++)
+		b[i] = min(b[i - 1], b[i]);
+	int q;
+	cin >> q;
+	while(q--){
+		int x, y;
+		cin >> x >> y;
+		cout << b[x - 1] + y << '\n';
+	}
 }
